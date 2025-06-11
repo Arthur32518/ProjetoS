@@ -37,9 +37,6 @@ static String msg = "";
 static String temp_S1_VD = "";
 static String temp_S2_VD = "";
 static String temp_S3_VD = "";
-static String temp_S1_AM = 3;
-static String temp_S2_AM = 3;
-static String temp_S3_AM = 3;
 static String temp_S1_VM = "";
 static String temp_S2_VM = "";
 static String temp_S3_VM = "";
@@ -73,20 +70,20 @@ static String temp_S3_VM = "";
     if(prog){
       if(!pass){
         Serial.println("Digite a senha");
-        String senha prog = Serial.readString();
+        String senha_prog = Serial.readString();
         if(senha == senha_prog.toInt()){
           Serial.println("Senha OK");
           pass= true;
         }
       }
       if(pass){
-        Serial.println("Qual semaforo deseja aumentar ou diminuir 5 segundos \n1 \n2 \n3")
-        opcao = serial.readString();
+        Serial.println("Qual semaforo deseja aumentar ou diminuir 5 segundos \n1 \n2 \n3");
+        opcao = Serial.readString();
         opcao.trim();
 
         if(opcao == "1"){
-          Serial.println("Tempo atualizado ")
-          int tempoNovo1 = serial.readString();
+          Serial.println("Tempo atualizado");
+          String tempoNovo1 = Serial.readString();
         }
       }
       
@@ -104,89 +101,89 @@ static String temp_S3_VM = "";
     }
   }
 if (!caminhao) {
-if (segundos >= 0 && segundos <= 27) {
-  digitalWrite(S1_VD, 1);
-  digitalWrite(S1_AM, 0);
-  digitalWrite(S1_VM, 0);
+  if (segundos >= 0 && segundos <= 27) {
+    digitalWrite(S1_VD, 1);
+    digitalWrite(S1_AM, 0);
+    digitalWrite(S1_VM, 0);
 
-  digitalWrite(S2_VD, 0);
-  digitalWrite(S2_AM, 0);
-  digitalWrite(S2_VM, 1);
+    digitalWrite(S2_VD, 0);
+    digitalWrite(S2_AM, 0);
+    digitalWrite(S2_VM, 1);
 
-  digitalWrite(S3_VD, 0);
-  digitalWrite(S3_AM, 0);
-  digitalWrite(S3_VM, 1);
+    digitalWrite(S3_VD, 0);
+    digitalWrite(S3_AM, 0);
+    digitalWrite(S3_VM, 1);
 
-} else if (segundos >= 27 && segundos <= 30) {
-  digitalWrite(S1_VD, 0);
-  digitalWrite(S1_AM, 1);
-  digitalWrite(S1_VM, 0);
+  } else if (segundos >= 27 && segundos <= 30) {
+    digitalWrite(S1_VD, 0);
+    digitalWrite(S1_AM, 1);
+    digitalWrite(S1_VM, 0);
 
-  digitalWrite(S2_VD, 0);
-  digitalWrite(S2_AM, 0);
-  digitalWrite(S2_VM, 1);
+    digitalWrite(S2_VD, 0);
+    digitalWrite(S2_AM, 0);
+    digitalWrite(S2_VM, 1);
 
-  digitalWrite(S3_VD, 0);
-  digitalWrite(S3_AM, 0);
-  digitalWrite(S3_VM, 1);
+    digitalWrite(S3_VD, 0);
+    digitalWrite(S3_AM, 0);
+    digitalWrite(S3_VM, 1);
 
-} else if (segundos >= 30 && segundos <= 47) {
-  digitalWrite(S1_VD, 0);
-  digitalWrite(S1_AM, 0);
-  digitalWrite(S1_VM, 1);
+  } else if (segundos >= 30 && segundos <= 47) {
+    digitalWrite(S1_VD, 0);
+    digitalWrite(S1_AM, 0);
+    digitalWrite(S1_VM, 1);
 
-  digitalWrite(S2_VD, 1);
-  digitalWrite(S2_AM, 0);
-  digitalWrite(S2_VM, 0);
+    digitalWrite(S2_VD, 1);
+    digitalWrite(S2_AM, 0);
+    digitalWrite(S2_VM, 0);
 
-  digitalWrite(S3_VD, 0);
-  digitalWrite(S3_AM, 0);
-  digitalWrite(S3_VM, 1);
-} else if (segundos > 47 && segundos <= 50) {
-  digitalWrite(S1_VD, 0);
-  digitalWrite(S1_AM, 0);
-  digitalWrite(S1_VM, 1);
+    digitalWrite(S3_VD, 0);
+    digitalWrite(S3_AM, 0);
+    digitalWrite(S3_VM, 1);
+  } else if (segundos > 47 && segundos <= 50) {
+    digitalWrite(S1_VD, 0);
+    digitalWrite(S1_AM, 0);
+    digitalWrite(S1_VM, 1);
 
-  digitalWrite(S2_VD, 0);
-  digitalWrite(S2_AM, 1);
-  digitalWrite(S2_VM, 0);
+    digitalWrite(S2_VD, 0);
+    digitalWrite(S2_AM, 1);
+    digitalWrite(S2_VM, 0);
 
-  digitalWrite(S3_VD, 0);
-  digitalWrite(S3_AM, 0);
-  digitalWrite(S3_VM, 1);
-} else if (segundos >= 50 && segundos <= 72) {
-  digitalWrite(S1_VD, 0);
-  digitalWrite(S1_AM, 0);
-  digitalWrite(S1_VM, 1);
+    digitalWrite(S3_VD, 0);
+    digitalWrite(S3_AM, 0);
+    digitalWrite(S3_VM, 1);
+  } else if (segundos >= 50 && segundos <= 72) {
+    digitalWrite(S1_VD, 0);
+    digitalWrite(S1_AM, 0);
+    digitalWrite(S1_VM, 1);
 
-  digitalWrite(S2_VD, 0);
-  digitalWrite(S2_AM, 0);
-  digitalWrite(S2_VM, 1);
+    digitalWrite(S2_VD, 0);
+    digitalWrite(S2_AM, 0);
+    digitalWrite(S2_VM, 1);
 
-  digitalWrite(S3_VD, 1);
-  digitalWrite(S3_AM, 0);
-  digitalWrite(S3_VM, 0);
-} else if (segundos >= 72 && segundos <= 75) {
-  digitalWrite(S1_VD, 0);
-  digitalWrite(S1_AM, 0);
-  digitalWrite(S1_VM, 1);
+    digitalWrite(S3_VD, 1);
+    digitalWrite(S3_AM, 0);
+    digitalWrite(S3_VM, 0);
+  } else if (segundos >= 72 && segundos <= 75) {
+    digitalWrite(S1_VD, 0);
+    digitalWrite(S1_AM, 0);
+    digitalWrite(S1_VM, 1);
 
-  digitalWrite(S2_VD, 0);
-  digitalWrite(S2_AM, 0);
-  digitalWrite(S2_VM, 1);
+    digitalWrite(S2_VD, 0);
+    digitalWrite(S2_AM, 0);
+    digitalWrite(S2_VM, 1);
 
-  digitalWrite(S3_VD, 0);
-  digitalWrite(S3_AM, 1);
-  digitalWrite(S3_VM, 0);
-}
-if (segundos == 75) {
-  if (modo){
-    caminhao = true;
+    digitalWrite(S3_VD, 0);
+    digitalWrite(S3_AM, 1);
+    digitalWrite(S3_VM, 0);
   }
-  if (!modo) {
-    caminhao = false;
+  if (segundos == 75) {
+    if (modo) {
+      caminhao = true;
+    }
+    if (!modo) {
+      caminhao = false;
+    }
   }
-}
 }
 
 
