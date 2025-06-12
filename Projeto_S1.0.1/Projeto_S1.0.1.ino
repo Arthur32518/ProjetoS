@@ -1,6 +1,6 @@
-//C++ code
-//VARIAVEL DO TIPO INTEIRA const int S1_VD = D13;
-const int S1_VD = D13;  
+// Sistema de Semáforo com Modo Caminhão e Programável
+
+const int S1_VD = D13;
 const int S1_AM = D12;
 const int S1_VM = D11;
 const int S2_VD = D10;
@@ -9,9 +9,30 @@ const int S2_VM = D8;
 const int S3_VD = D4;
 const int S3_AM = D3;
 const int S3_VM = D2;
+
+int tempoVerde_S1 = 30;
+int tempoVerde_S2 = 20;
+int tempoVerde_S3 = 25;
+const int tempoAmarelo = 3;
+int tempoTotal = tempoVerde_S1 + tempoAmarelo + tempoVerde_S2 + tempoAmarelo + tempoVerde_S3;
+
 bool caminhao = false;
-String mensagem = "";
 bool modo = false;
+bool prog = false;
+bool usuarios = false;
+bool pass = false;
+
+String mensagem = "";
+String mensagemUsuario = "";
+String mensagemU = "";
+String escolha = "";
+int senha = 123;
+
+unsigned long tempo_anterior = 0;
+unsigned int segundos = 0;
+
+int etapaProg = 0;
+int ruaEscolhida = 0;
 
 void setup() {
   pinMode(S1_VD, OUTPUT);
@@ -25,25 +46,8 @@ void setup() {
   pinMode(S3_VM, OUTPUT);
   Serial.begin(9600);
 }
-int tempoVerde_S1 = 30;
-int tempoVerde_S2 = 20;
-int tempoVerde_S3 = 25;
-const int tempoAmarelo = 3;
-int tempoTotal = tempoVerde_S1 + tempoAmarelo + tempoVerde_S2 + tempoAmarelo + tempoVerde_S3;
 
 void loop() {
-  static bool prog = false;
-  static bool pass = false;
-  static bool finalizar = false;
-  static String opcao = "";
-  static String mensagemUsuario = "";
-  static String mensagemFinalizar = "";
-  static int senha = 123;
-  static String msg = "";
-
-
-  static unsigned long tempo_anterior = 0;
-  static unsigned int segundos = 0;
   unsigned long tempo_atual = millis();
 
   if (tempo_atual - tempo_anterior > 1000) {
@@ -51,311 +55,118 @@ void loop() {
     segundos++;
     Serial.println(segundos);
   }
-  if (segundos < tempoVerde_S1) {
 
-    digitalWrite(S1_VD, 1);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 0);
-
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-  } else if (segundos < tempoVerde_S1 + tempoAmarelo) {
-
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 1);
-    digitalWrite(S1_VM, 0);
-
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-  } else if (segundos < tempoVerde_S1 + tempoAmarelo + tempoVerde_S2) {
-   
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-
-    digitalWrite(S2_VD, 1);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 0);
-
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-  } else if (segundos < tempoVerde_S1 + tempoAmarelo + tempoVerde_S2 + tempoAmarelo) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 1);
-    digitalWrite(S2_VM, 0);
-
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-  } else if (segundos < tempoVerde_S1 + tempoAmarelo + tempoVerde_S2 + tempoAmarelo + tempoVerde_S3) {
-    
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-
-    digitalWrite(S3_VD, 1);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 0);
-  } else if (segundos < tempoTotal) {
-   
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 1);
-    digitalWrite(S3_VM, 0);
+  if (!caminhao) {
+    if (segundos < tempoVerde_S1) {
+      digitalWrite(S1_VD, 1); digitalWrite(S1_AM, 0); digitalWrite(S1_VM, 0);
+      digitalWrite(S2_VM, 1); digitalWrite(S3_VM, 1);
+      digitalWrite(S2_VD, 0); digitalWrite(S2_AM, 0);
+      digitalWrite(S3_VD, 0); digitalWrite(S3_AM, 0);
+    } else if (segundos < tempoVerde_S1 + tempoAmarelo) {
+      digitalWrite(S1_VM, 0);
+      digitalWrite(S1_VD, 0); digitalWrite(S1_AM, 1);
+      digitalWrite(S2_VM, 1); digitalWrite(S3_VM, 1);
+    } else if (segundos < tempoVerde_S1 + tempoAmarelo + tempoVerde_S2) {
+      digitalWrite(S2_VD, 1); digitalWrite(S2_AM, 0); digitalWrite(S2_VM, 0);
+      digitalWrite(S1_VM, 1); digitalWrite(S3_VM, 1);
+    } else if (segundos < tempoVerde_S1 + tempoAmarelo + tempoVerde_S2 + tempoAmarelo) {
+      digitalWrite(S2_VD, 0); digitalWrite(S2_AM, 1); digitalWrite(S2_VM, 0);
+    } else if (segundos < tempoTotal) {
+      digitalWrite(S3_VD, 1); digitalWrite(S3_AM, 0); digitalWrite(S3_VM, 0);
+      digitalWrite(S1_VM, 1); digitalWrite(S2_VM, 1);
+    } else {
+      segundos = 0;
+    }
   } else {
-    segundos = 0;
-    if (finalizar) {
-      tempoVerde_S1 = tempoVerde_S1.toInt();
-      tempoVerde_S2 = tempoVerde_S2.toInt();
-      tempoVerde_S3 = tempoVerde_S3.toInt();
-      prog = false;
-      pass = false;
-      finalizar = false;
-      menu = true;
-      menu_inicio = true;
-      menuRua1 = false;
-      menuRua2 = false;
-      menuRua3 = false;
-      String msg = "";
-      String tempVerde_S1 = "";
-      String tempVerde_S2 = "";
-      String tempVerde_S3 = "";
+    // Modo caminhão
+    if (segundos <= 32) {
+      digitalWrite(S2_VD, 1); digitalWrite(S2_VM, 0);
+      digitalWrite(S1_VM, 1); digitalWrite(S3_VM, 1);
+    } else if (segundos <= 35) {
+      digitalWrite(S2_AM, 1);
+    } else if (segundos <= 57) {
+      digitalWrite(S1_VD, 1); digitalWrite(S2_VM, 1);
+    } else if (segundos <= 60) {
+      digitalWrite(S3_AM, 1);
+    } else if (segundos <= 82) {
+      digitalWrite(S3_VD, 1);
+    } else if (segundos <= 85) {
+      digitalWrite(S3_AM, 1);
+    } else {
+      segundos = 0;
+      caminhao = modo;
     }
   }
-}
-}
-}
-if (mensagem == "caminhao") {
-  modo = true;
-  Serial.println("Modo caminhão ativado");
-} 
-else if (mensagem == "normal") {
-  modo = false;
-  Serial.println("Modo normal ativado");
-}
-}
-if (!caminhao) {
-  if (segundos < tempoVerde_S1) {
-    digitalWrite(S1_VD, 1);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 0);
-
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-
-  } else if (segundos < tempoVerde_S1 + tempoAmarelo) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 1);
-    digitalWrite(S1_VM, 0);
-
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-
-  } else if (segundos < tempoVerde_S1 + tempoAmarelo + tempoVerde_S2) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-
-    digitalWrite(S2_VD, 1);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 0);
-
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-  } else if (segundos < tempoVerde_S1 + tempoAmarelo + tempoVerde_S2 + tempoAmarelo) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 1);
-    digitalWrite(S2_VM, 0);
-
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-  } else if (segundos < tempoVerde_S1 + tempoAmarelo + tempoVerde_S2 + tempoAmarelo + tempoVerde_S3) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-
-    digitalWrite(S3_VD, 1);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 0);
-  }
-  if (segundos == 75) {
-    if (modo) {
-      caminhao = true;
-    }
-    if (!modo) {
-      caminhao = false;
-    }
-  }
-}
-if (caminhao) {
-
-  if (segundos > 0 && segundos <= 32) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-    digitalWrite(S2_VD, 1);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 0);
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-  } else if (segundos >= 32 && segundos <= 35) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 1);
-    digitalWrite(S2_VM, 0);
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-  } else if (segundos >= 35 && segundos <= 57) {
-    digitalWrite(S1_VD, 1);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 0);
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 1);
-  } else if (segundos >= 57 && segundos <= 60) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 1);
-    digitalWrite(S3_VM, 0);
-  } else if (segundos >= 60 && segundos <= 82) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-    digitalWrite(S3_VD, 1);
-    digitalWrite(S3_AM, 0);
-    digitalWrite(S3_VM, 0);
-  } else if (segundos >= 82 && segundos <= 85) {
-    digitalWrite(S1_VD, 0);
-    digitalWrite(S1_AM, 0);
-    digitalWrite(S1_VM, 1);
-    digitalWrite(S2_VD, 0);
-    digitalWrite(S2_AM, 0);
-    digitalWrite(S2_VM, 1);
-    digitalWrite(S3_VD, 0);
-    digitalWrite(S3_AM, 1);
-    digitalWrite(S3_VM, 0);
-  }
-  if (segundos > 57) {
-    segundos = 0;
-    if (modo) {
-      caminhao = true;
-    }
-    if (!modo) {
-      caminhao = false;
-    }
-  }
-}
 
   if (Serial.available() > 0) {
+    mensagem = Serial.readString();
+    mensagem.trim();
+
     if (!prog) {
-      Serial.println("Se deseja entrar em modo progamar, digite: prog");
-      mensagem = Serial.readString();
-      mensagem.trim();
       if (mensagem == "prog") {
-        Serial.println("Modo prog");
         prog = true;
+        etapaProg = 1;
+        Serial.println("Modo programação ativado.");
+        Serial.println("Digite o nome de usuário:");
+      } else if (mensagem == "caminhao") {
+        modo = true;
+        Serial.println("Modo caminhão ativado");
+      } else if (mensagem == "normal") {
+        modo = false;
+        Serial.println("Modo normal ativado");
       }
-    } else if (prog) {
-      if (!usuarios) {
-        Serial.println("Qual seu usuario?: ");
-        mensagemU = Serial.readString();
-        mensagemU.trim();
-        if (mensagemUsuario == "PEDRO_SENAI" || mensagemUsuario == "LURYAN_SENAI" || mensagemUsuario == "VITÓRIA_SENAI" || mensagemUsuario == "ARTHUR_SENAI") {
-          Serial.println("Usuário permitido!");
-          usuarios = true;
-          Serial.println("Digite a senha: ");
+    } else {
+      if (etapaProg == 1) {
+        if (mensagem == "PEDRO_SENAI" || mensagem == "LURYAN_SENAI" || mensagem == "VITÓRIA_SENAI" || mensagem == "ARTHUR_SENAI") {
+          etapaProg = 2;
+          Serial.println("Usuário válido. Agora digite a senha:");
+        } else {
+          Serial.println("Usuário inválido. Tente novamente:");
         }
-      } else if (usuarios) {
-        if (!pass) {
-          String senha_prog = Serial.readString();
-          senha_prog.trim();
-          if (senha_prog.toInt() == senha) {
-            Serial.println("Senha OK!");
-            pass = true;
-            Serial.println("Qual rua que deseja alterar?\n 1\n 2 \n 3");
-          }
-        } else if (pass) {
-          if (menu) {
-            escolha = Serial.readString();
-            escolha.trim();
-            int escolhaV = escolha.toInt(); 
-            if (escolhaV == 1) {
-              if (menuRua1) {
-                Serial.println("Digite o tempo para mudar o LED verde da rua 1: ");
-                menuRuaA = false;
-              }
-            }
-          } else if (escolhaV == 2) {
-            if (menuRua2) {
-              Serial.println("Digite o tempo para mudar o LED verde da rua 2: ");
-              menuRuaB = false;
+      } else if (etapaProg == 2) {
+        if (mensagem.toInt() == senha) {
+          etapaProg = 3;
+          Serial.println("Senha correta! Digite a rua a alterar (1, 2, 3) ou 'sair' para encerrar:");
+        } else {
+          Serial.println("Senha incorreta. Tente novamente:");
+        }
+      } else if (etapaProg == 3) {
+        if (mensagem == "sair") {
+          prog = false;
+          etapaProg = 0;
+          Serial.println("Saindo do modo programação.");
+        } else {
+          ruaEscolhida = mensagem.toInt();
+          if (ruaEscolhida >= 1 && ruaEscolhida <= 3) {
+            etapaProg = 4;
+            Serial.print("Digite o novo tempo do verde para a Rua ");
+            Serial.print(ruaEscolhida);
+            Serial.println(":");
+          } else {
+            Serial.println("Rua inválida. Digite 1, 2 ou 3, ou 'sair' para encerrar:");
           }
         }
-        else if (escolhaV == 3) {
-            if (menuRua3) {
-              Serial.println("Digite o tempo para mudar o LED verde da rua 3: ");
-              menuRuaB = false;
-          }
+      } else if (etapaProg == 4) {
+        int novoTempo = mensagem.toInt();
+        if (novoTempo > 0 && novoTempo < 100) {
+          if (ruaEscolhida == 1) tempoVerde_S1 = novoTempo;
+          else if (ruaEscolhida == 2) tempoVerde_S2 = novoTempo;
+          else if (ruaEscolhida == 3) tempoVerde_S3 = novoTempo;
+
+          tempoTotal = tempoVerde_S1 + tempoAmarelo + tempoVerde_S2 + tempoAmarelo + tempoVerde_S3;
+
+          Serial.println("Tempo alterado com sucesso.");
+        } else {
+          Serial.println("Tempo inválido. Tente novamente com valor entre 1 e 99.");
         }
+
+        etapaProg = 3;
+        Serial.println("Digite outra rua (1, 2, 3) ou 'sair' para encerrar:");
       }
+    }
+  }
+
+  if (segundos == 75) {
+    caminhao = modo;
+  }
+}
